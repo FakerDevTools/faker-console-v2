@@ -1,0 +1,12 @@
+/* Always underline links in all states */
+a:link, a:visited, a:hover, a:active, a {
+    -text-decoration: underline !important;
+}
+body {
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Courier New', monospace;
+}

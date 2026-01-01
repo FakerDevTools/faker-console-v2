@@ -4,6 +4,9 @@ define('TITLE', 'Register');
 
 include __DIR__ . '/includes/bootstrap.php';
 
+// Redirect if already logged in
+login_check();
+
 include __DIR__ . '/templates/html_header.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -85,24 +88,21 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (!isValidEmail(email)) {
             emailError.textContent = 'Please enter a valid email address.';
             valid = false;
+        } else if(checkEmailExists(email)) {
+            emailError.textContent = 'Email address already registered.';
+            valid = false;
         }
+
         if (!password) {
             passwordError.textContent = 'Password is required.';
             valid = false;
         }
+
         if (!valid) {
             e.preventDefault();
             return;
         }
-        // AJAX check for email existence
-        e.preventDefault();
-        checkEmailExists(email).then(function(exists) {
-            if (exists) {
-                emailError.textContent = 'Email already registered.';
-            } else {
-                form.submit();
-            }
-        });
+        
     });
 });
 </script>

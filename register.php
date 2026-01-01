@@ -2,36 +2,37 @@
 
 define('TITLE', 'Register');
 
-include __DIR__ . '/include/bootstrap.php';
+include __DIR__ . '/includes/bootstrap.php';
 
 include __DIR__ . '/templates/html_header.php';
-
-$success = '';
-$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
     if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
+        message_set('Please enter a valid email address.', 'error');
+        header_redirect('/register');
     } elseif (!$password) {
-        $error = 'Password is required.';
+        message_set('Password is required.', 'error');
+        header_redirect('/register');
     } else {
-        // Check if email exists
         $stmt = $mysqli->prepare('SELECT id FROM users WHERE email = ?');
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows > 0) {
-            $error = 'Email already registered.';
+            message_set('Email already registered.', 'error');
+            header_redirect('/register');
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $mysqli->prepare('INSERT INTO users (email, password, created_at, updated_at) VALUES (?, ?, NOW(), NOW())');
             $stmt->bind_param('ss', $email, $hash);
             if ($stmt->execute()) {
-                $success = 'Registration successful! You can now <a href="/login">login</a>.';
+                message_set('Registration successful! You can now <a href="/login">login</a>.', 'success');
+                header_redirect('/register');
             } else {
-                $error = 'Registration failed. Please try again.';
+                message_set('Registration failed. Please try again.', 'error');
+                header_redirect('/register');
             }
         }
         $stmt->close();
@@ -46,11 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <img src="https://cdn.faker.ca/images@1.0.0/faker-logo-coloured-horizontal.png" alt="Faker Logo" class="w3-margin-bottom" style="max-width:300px;">
     </a>
 
-    <?php if ($success): ?>
-        <div class="w3-panel w3-green w3-padding w3-round-large w3-margin-bottom"><?= $success ?></div>
-    <?php elseif ($error): ?>
-        <div class="w3-panel w3-red w3-padding w3-round-large w3-margin-bottom"><?= $error ?></div>
-    <?php endif; ?>
+    <?php message_get(); ?>
 
     <form method="post" action="" id="registerForm" novalidate>
         

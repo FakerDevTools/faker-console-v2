@@ -2,7 +2,7 @@
 
 define('TITLE', 'Login');
 
-include __DIR__ . '/include/bootstrap.php';
+include __DIR__ . '/includes/bootstrap.php';
 
 include __DIR__ . '/templates/html_header.php';
 
@@ -21,17 +21,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->fetch();
             if (password_verify($password, $hash)) {
                 $_SESSION['user_id'] = $user_id;
-                header('Location: /dashboard');
-                exit;
+                header_redirect('/dashboard');
             } else {
-                $login_error = 'Invalid email or password.';
+                message_set('Invalid email or password.', 'error');
+                header_redirect('/login');
             }
         } else {
-            $login_error = 'Invalid email or password.';
+            message_set('Invalid email or password.', 'error');
+            header_redirect('/login');
         }
         $stmt->close();
     } else {
-        $login_error = 'Please enter both email and password.';
+        message_set('Please enter both email and password.', 'error');
+        header_redirect('/login');
     }
 }
 
@@ -45,9 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" action="" id="loginForm" novalidate>
 
-        <?php if (!empty($login_error)): ?>
-            <div class="w3-panel w3-red w3-padding w3-round-large w3-margin-bottom"><?= $login_error ?></div>
-        <?php endif; ?>
+        <?php message_get(); ?>
         
         <label class="w3-text-black" for="email"><i class="fas fa-envelope"></i> Email</label>
         <input class="w3-input w3-border w3-margin-bottom" type="text" id="email" name="email">

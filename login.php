@@ -2,13 +2,10 @@
 
 define('TITLE', 'Login');
 
-include __DIR__ . '/includes/bootstrap.php';
-
 // Redirect if already logged in
 login_check();
 
-include __DIR__ . '/templates/html_header.php';
-
+// Form submission processing
 $login_error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -39,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header_redirect('/login');
     }
 }
+
+include __DIR__ . '/templates/html_header.php';
 
 ?>
 

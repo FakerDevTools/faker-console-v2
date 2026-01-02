@@ -1,3 +1,4 @@
+
 // Check if email exists via AJAX. Returns a Promise that resolves to true/false.
 async function checkEmailExists(email) {
     try {
@@ -9,8 +10,11 @@ async function checkEmailExists(email) {
 
         const data = await response.json();
 
-        if (typeof data.exists !== 'undefined') {
-            return data.exists;
+        console.log(email);
+        console.log(data);
+
+        if (typeof data.exists === 'boolean') {
+            if(data.exists === true) return true;
         }
         return false;
     } catch (e) {
@@ -24,3 +28,13 @@ function isValidEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
+
+// Password must have at least one letter, one number, one capital, and one special character
+function isStrongPassword(password) {
+    const hasLetter = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasCapital = /[A-Z]/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+    return hasLetter && hasNumber && hasCapital && hasSpecial;
+}
+

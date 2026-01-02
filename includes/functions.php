@@ -1,11 +1,9 @@
-// Redirects to dashboard if user is already logged in
-function login_check() {
-	if (!empty($_SESSION['user_id'])) {
-		message_set('You are already logged in.', 'error');
-		header_redirect('/dashboard');
-	}
-}
 <?php
+
+function pre($data)
+{
+    echo '<pre>' . htmlspecialchars(print_r($data, true)) . '</pre>';
+}
 
 function message_set($message, $type = 'success') {
 	$_SESSION['message'] = $message;
@@ -25,4 +23,55 @@ function message_get() {
 function header_redirect($url) {
 	header('Location: ' . $url);
 	exit;
+}
+
+// Send a plain text email using Brevo (Sendinblue) API
+function mail_send($to_email, $to_name, $subject, $message) {
+
+    $to_name = trim($to_name);
+
+    // Configure API key authorization: api-key
+    $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', BREVO_API_KEY);
+
+    $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
+        new GuzzleHttp\Client(),
+        $config
+    );
+    $sendSmtpEmail = new Brevo\Client\Model\SendSmtpEmail();
+
+    // Sender details
+    $sendSmtpEmail['sender'] = [
+        'name' => 'Faker Dev Tools',
+        'email' => 'support@faker.ca'
+    ];
+
+    // Recipient details
+    $sendSmtpEmail['to'] = [
+        [
+            'email' => $to_email,
+            'name' => $to_name ? $to_name : $to_email
+        ]
+    ];
+
+    // Email content and subject
+    $sendSmtpEmail['subject'] = $subject;
+    $sendSmtpEmail['htmlContent'] = $message;
+
+    try {
+        $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
+        // print_r($result);
+        // echo "Email sent successfully!\n";
+    } catch (Exception $e) {
+        pre($sendSmtpEmail);
+        echo 'Exception when calling TransactionalEmailsApi->sendTransacEmail: ', $e->getMessage(), PHP_EOL;
+    }
+
+}
+
+// Redirects to dashboard if user is already logged in
+function login_check() {
+	if (!empty($_SESSION['user_id'])) {
+		message_set('You are already logged in.', 'error');
+		header_redirect('/dashboard');
+	}
 }

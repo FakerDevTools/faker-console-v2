@@ -6,8 +6,8 @@ include __DIR__ . '/templates/html_header.php';
 
 ?>
 
-<h1>404 ERROR</h1>
-<p>The page you are looking for could not be found.</p>
+<h1>ERROR</h1>
+<p><?=$error?></p>
 
 <?php
 

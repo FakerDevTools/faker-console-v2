@@ -5,13 +5,16 @@ function pre($data)
     echo '<pre>' . htmlspecialchars(print_r($data, true)) . '</pre>';
 }
 
-function message_set($message, $type = 'success') {
+function message_set($message, $type = 'success') 
+{
 	$_SESSION['message'] = $message;
 	$_SESSION['type'] = $type;
 }
 
-function message_get() {
-	if (!empty($_SESSION['message'])) {
+function message_get() 
+{
+	if (!empty($_SESSION['message'])) 
+{
 		$type = $_SESSION['type'] ?? 'success';
 		$class = $type === 'success' ? 'w3-green' : ($type === 'error' ? 'w3-red' : 'w3-yellow');
         $icon = $type === 'success' ? '<i class="fas fa-check-circle"></i> ' : ($type === 'error' ? '<i class="fas fa-times-circle"></i> ' : '<i class="fas fa-exclamation-circle"></i> ');
@@ -20,13 +23,15 @@ function message_get() {
 	}
 }
 
-function header_redirect($url) {
+function header_redirect($url) 
+{
 	header('Location: ' . $url);
 	exit;
 }
 
 // Send a plain text email using Brevo (Sendinblue) API
-function mail_send($to_email, $to_name, $subject, $message) {
+function mail_send($to_email, $to_name, $subject, $message) 
+{
 
     $to_name = trim($to_name);
 
@@ -57,11 +62,14 @@ function mail_send($to_email, $to_name, $subject, $message) {
     $sendSmtpEmail['subject'] = $subject;
     $sendSmtpEmail['htmlContent'] = $message;
 
-    try {
+    try 
+    {
         $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
         // print_r($result);
         // echo "Email sent successfully!\n";
-    } catch (Exception $e) {
+    } 
+    catch (Exception $e) 
+    {
         pre($sendSmtpEmail);
         echo 'Exception when calling TransactionalEmailsApi->sendTransacEmail: ', $e->getMessage(), PHP_EOL;
     }
@@ -69,8 +77,10 @@ function mail_send($to_email, $to_name, $subject, $message) {
 }
 
 // Redirects to dashboard if user is already logged in
-function login_check() {
-	if (!empty($_SESSION['user_id'])) {
+function login_check() 
+{
+	if (!empty($_SESSION['user_id'])) 
+{
 		message_set('You are already logged in.', 'error');
 		header_redirect('/dashboard');
 	}

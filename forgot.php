@@ -6,9 +6,13 @@ define('TITLE', 'Forgot Password');
 login_check();
 
 // Form submission processing
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+
     $email = trim($_POST['email'] ?? '');
-    if ($email) {
+
+    if ($email) 
+    {
 
         $stmt = $mysqli->prepare('
             SELECT id, first, last, email
@@ -19,7 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
         $stmt->store_result();
 
-        if ($stmt->num_rows === 1) {
+        if ($stmt->num_rows === 1) 
+        {
+
             $token = bin2hex(random_bytes(32));
             $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
@@ -45,15 +51,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             message_set('A password reset link has been sent to your email address.', 'success');
             header_redirect('/login');
-        } else {
+
+        } 
+        else 
+        {
+
             message_set('No account found with that email address.', 'error');
             header_redirect('/forgot');
+
         }
+
         $stmt->close();
-    } else {
+
+    } 
+    else 
+    {
+
         message_set('Please enter your email address.', 'error');
         header_redirect('/forgot');
+
     }
+    
 }
 
 include __DIR__ . '/templates/html_header.php';
@@ -104,7 +122,7 @@ async function validateForm(e) {
     if(valid) {
         form.submit();
     }
-
+    
 }
 
 </script>

@@ -6,9 +6,12 @@ define('TITLE', 'Register');
 login_check();
 
 // Page requirements validation
-if(!isset($_GET['token']) || empty($_GET['token'])) {
+if(!isset($_GET['token']) || empty($_GET['token'])) 
+{
+
     message_set('Invalid or missing password reset token.', 'error');
     header_redirect('/login');
+
 }
 
 $stmt = $mysqli->prepare('
@@ -22,22 +25,37 @@ $stmt->bind_param('s', $_GET['token']);
 $stmt->execute();
 $stmt->store_result();
 
-if ($stmt->num_rows == 0) {
+if ($stmt->num_rows == 0) 
+{
+
     message_set('Invalid token provided.', 'error');
     header_redirect('/login');
+
 }
 
 // Form submission processing
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+
     $password = trim($_POST['password'] ?? '');
     $password_confirm = trim($_POST['passwordConfirm'] ?? '');
-    if (!$password or !$password_confirm) {
+
+    if (!$password or !$password_confirm) 
+    {
+
         message_set('Password is required.', 'error');
         header_redirect('/reset/token/' . htmlspecialchars($_GET['token']));
-    }elseif($password !== $password_confirm) {
+
+    }
+    elseif($password !== $password_confirm) 
+    {
+
         message_set('Passwords do not match.', 'error');
         header_redirect('/reset/token/' . htmlspecialchars($_GET['token']));
-    } else {
+
+    } 
+    else 
+    {
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $mysqli->prepare('
@@ -53,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header_redirect('/login');
         
     }
+
 }
 
 include __DIR__ . '/templates/html_header.php';
@@ -120,7 +139,7 @@ async function validateForm(e) {
         passwordConfirmError.textContent = 'Password must be at least 8 characters long.';
         valid = false;
     }
-    else if (!isStrongPassword(password)) 
+    else if (!isStrongPassword(passwordConfirm)) 
     {
         passwordConfirmError.textContent = 'Password must have at least one lowercase letter, one uppercase letter, one number, and one special character.';
         valid = false;

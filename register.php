@@ -6,16 +6,44 @@ define('TITLE', 'Register');
 login_check();
 
 // Form submission processing
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+
+    $first = trim($_POST['first'] ?? '');
+    $last = trim($_POST['last'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
-    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+    if (!$first) 
+    {
+
+        message_set('First name is required.', 'error');
+        header_redirect('/register');
+
+    } 
+    elseif (!$last) 
+    {
+
+        message_set('Last name is required.', 'error');
+        header_redirect('/register');
+
+    } 
+    elseif (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) 
+    {
+
         message_set('Please enter a valid email address.', 'error');
         header_redirect('/register');
-    } elseif (!$password) {
+
+    } 
+    elseif (!$password) 
+    {
+
         message_set('Password is required.', 'error');
         header_redirect('/register');
-    } else {
+
+    } 
+    else 
+    {
 
         $stmt = $mysqli->prepare('
             SELECT id 
@@ -26,34 +54,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
         $stmt->store_result();
 
-        if ($stmt->num_rows > 0) {
+        if ($stmt->num_rows > 0) 
+        {
+
             message_set('Email already registered.', 'error');
             header_redirect('/register');
-        } else {
+
+        } 
+        else 
+        {
+
+            $token = bin2hex(random_bytes(32));
 
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $mysqli->prepare('
                 INSERT INTO users (
+                    first,
+                    last,
                     email, 
                     password, 
+                    verify_token,
                     created_at, 
                     updated_at
                 ) VALUES (
-                    ?, ?, NOW(), NOW()
+                    ?, ?, ?, ?, ?, NOW(), NOW()
                 )
             ');
-            $stmt->bind_param('ss', $email, $hash);
+            $stmt->bind_param('sssss', $first, $last, $email, $hash, $token);
 
-            if ($stmt->execute()) {
+            // Send email
+            $data['link'] = (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . "/verify/token/$token";
+            
+            include(__DIR__ . '/messages/account_verify.php');
+
+            mail_send($email, $first.' '.$last, 'Account Verification', $message);
+
+            if ($stmt->execute()) 
+            {
+
                 message_set('Registration successful! You can now login.', 'success');
                 header_redirect('/login');
-            } else {
+
+            } 
+            else 
+            {
+
                 message_set('Registration failed. Please try again.', 'error');
                 header_redirect('/register');
+
             }
+
         }
+
         $stmt->close();
+
     }
+
 }
 
 include __DIR__ . '/templates/html_header.php';
@@ -69,15 +125,21 @@ include __DIR__ . '/templates/html_header.php';
     <?php message_get(); ?>
 
     <form method="post" action="" id="registerForm" novalidate>
-        
+        <label class="w3-text-black" for="first"><i class="fas fa-user"></i> First Name</label>
+        <input class="w3-input w3-border w3-margin-bottom" type="text" id="first" name="first">
+        <div id="firstError" class="w3-text-red w3-small w3-margin-bottom"></div>
+
+        <label class="w3-text-black" for="last"><i class="fas fa-user"></i> Last Name</label>
+        <input class="w3-input w3-border w3-margin-bottom" type="text" id="last" name="last">
+        <div id="lastError" class="w3-text-red w3-small w3-margin-bottom"></div>
+
         <label class="w3-text-black" for="email"><i class="fas fa-envelope"></i> Email</label>
         <input class="w3-input w3-border w3-margin-bottom" type="text" id="email" name="email">
         <div id="emailError" class="w3-text-red w3-small w3-margin-bottom"></div>
-        
+
         <label class="w3-text-black" for="password"><i class="fas fa-lock"></i> Password</label>
         <input class="w3-input w3-border w3-margin-bottom" type="password" id="password" name="password">
         <div id="passwordError" class="w3-text-red w3-small w3-margin-bottom"></div>
-        
     </form>
 
     <button class="w3-button w3-black w3-margin-top" onclick="validateForm()">
@@ -95,14 +157,26 @@ include __DIR__ . '/templates/html_header.php';
 async function validateForm(e) {
 
     var form = document.getElementById('registerForm');
+    var first = document.getElementById('first').value.trim();
+    var last = document.getElementById('last').value.trim();
     var email = document.getElementById('email').value.trim();
     var password = document.getElementById('password').value.trim();
 
     let valid = true;
 
+    firstError.textContent = '';
+    lastError.textContent = '';
     emailError.textContent = '';
     passwordError.textContent = '';
 
+    if (!first) {
+        firstError.textContent = 'First name is required.';
+        valid = false;
+    }
+    if (!last) {
+        lastError.textContent = 'Last name is required.';
+        valid = false;
+    }
     if (!email) {
         emailError.textContent = 'Email is required.';
         valid = false;
@@ -117,15 +191,13 @@ async function validateForm(e) {
     if (!password) {
         passwordError.textContent = 'Password is required.';
         valid = false;
-    }
-    else if(passwordConfirm.length < 8) 
-    {
-        passwordConfirmError.textContent = 'Password must be at least 8 characters long.';
+    } else if(password.length < 8) {
+        passwordError.textContent = 'Password must be at least 8 characters long.';
         valid = false;
-    } else if (!isStrongPassword(password)) {
+    } /* else if (!isStrongPassword(password)) {
         passwordError.textContent = 'Password must have at least one lowercase letter, one uppercase letter, one number, and one special character.';
         valid = false;
-    }
+    } */
 
     if(valid) {
         form.submit();

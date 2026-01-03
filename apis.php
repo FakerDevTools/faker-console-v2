@@ -1,5 +1,6 @@
 <?php
 
+define('MENU', 'apis');
 define('TITLE', 'APIs');
 
 include __DIR__ . '/templates/html_header.php';

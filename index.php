@@ -21,36 +21,52 @@ $page = array_shift($segments);
 
 if($page == 'ajax')
 {
+
     $page = array_shift($segments);
 
     if ($page && file_exists(__DIR__ . "/ajax/$page.php") && $page !== 'index') 
     {
-        
+
+        for ($i = 0; $i < count($segments) - 1; $i += 2) 
+        {    
+            if (isset($segments[$i+1])) $_GET[$segments[$i]] = $segments[$i+1];
+        }
+
         include __DIR__ . "/ajax/$page.php";
         exit;
 
     }
 
 }
-
-for ($i = 0; $i < count($segments) - 1; $i += 2) 
+elseif ($page == 'action' )
 {
-    
-    if (isset($segments[$i+1])) $_GET[$segments[$i]] = $segments[$i+1];
+
+    $page = array_shift($segments);
+
+    if ($page && file_exists(__DIR__ . "/action/$page.php") && $page !== 'index') 
+    {
+
+        for ($i = 0; $i < count($segments) - 1; $i += 2) 
+        {    
+            if (isset($segments[$i+1])) $_GET[$segments[$i]] = $segments[$i+1];
+        }
+        
+        include __DIR__ . "/action/$page.php";
+        exit;
+
+    }
 
 }
 
 if ($page && file_exists(__DIR__ . "/$page.php") && $page !== 'index') 
 {
 
+    for ($i = 0; $i < count($segments) - 1; $i += 2) 
+    {    
+        if (isset($segments[$i+1])) $_GET[$segments[$i]] = $segments[$i+1];
+    }
+
     include __DIR__ . "/$page.php";
-    exit;
-
-}
-elseif ($page && file_exists(__DIR__ . "/action/$page.php") && $page !== 'index') 
-{
-
-    include __DIR__ . "/action/$page.php";
     exit;
 
 }

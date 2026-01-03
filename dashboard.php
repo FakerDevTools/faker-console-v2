@@ -1,5 +1,6 @@
 <?php
 
+define('MENU', 'dashboard');
 define('TITLE', 'Dashboard');
 
 include __DIR__ . '/templates/html_header.php';

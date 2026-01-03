@@ -29,6 +29,8 @@ if(!$stmt->num_rows)
 $stmt->bind_result($api_id, $name, $description, $icon, $slug, $enabled);
 $stmt->fetch();
 
+define('MENU', 'apis');
+define('TAB', isset($_GET['tab']) ? $_GET['tab'] : 'details');
 define('TITLE', $name);
 
 include __DIR__ . '/templates/html_header.php';
@@ -39,9 +41,34 @@ include __DIR__ . '/templates/dashboard_header.php';
 <h1><?= htmlspecialchars($name) ?> API</h1>
 
 <a href="/apis">APIS</a> / 
-<?= htmlspecialchars($name) ?>
+<a href="/api/id/<?= htmlspecialchars($slug) ?>"><?= htmlspecialchars($name) ?></a> / 
+Details
 
 <hr>
+
+<?php if(!isset($_GET['tab'])): ?>
+    <span class="w3-text-black"><i class="fa fa-magnifying-glass"></i> Details</span> | 
+<?php else: ?>
+    <a href="/api/id/<?= htmlspecialchars($slug) ?>"><i class="fa fa-magnifying-glass"></i> Details</a> | 
+<?php endif; ?>
+
+<?php if(TAB == 'docs'): ?>
+    <span class="w3-text-black"><i class="fa fa-book"></i> Documentation</span> | 
+<?php else: ?>
+    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/docs"><i class="fa fa-book"></i> Documentation</a> | 
+<?php endif; ?>
+
+<?php if(TAB == 'examples'): ?>
+    <span class="w3-text-black"><i class="fa fa-code"></i> Code Examples</span>
+<?php else: ?>
+    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/examples"><i class="fa fa-code"></i> Code Examples</a>
+<?php endif; ?>
+
+<hr> 
+
+<?php if(!isset($_GET['tab'])): ?>
+
+<h2>API Details</h2>
 
 <input type="checkbox" class="w3-check" id="enable" <?= $enabled ? 'checked' : '' ?> />
 <label for="enable" id="enableLabel"><?= $enabled ? 'This API is Enabled' : 'Enable this API' ?></label>
@@ -91,6 +118,22 @@ enable.addEventListener('change', function()
 </script>
 
 
+
+<?php elseif($_GET['tab'] == 'docs'): ?>
+
+<h2>Documentation</h2>
+
+<p>Documentation content goes here.</p>
+
+
+
+<?php elseif($_GET['tab'] == 'examples'): ?>
+
+<h2>Examples</h2>
+
+<p>Code examples content goes here.</p>
+
+<?php endif; ?>
 
 <?php 
 

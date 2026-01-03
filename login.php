@@ -1,7 +1,5 @@
 <?php
 
-define('TITLE', 'Login');
-
 // Redirect if already logged in
 login_check();
 
@@ -65,39 +63,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 }
 
+define('TITLE', 'Login');
+
 include __DIR__ . '/templates/html_header.php';
+include __DIR__ . '/templates/login_header.php';
 
 ?>
 
-<div class="w3-display-container" style="min-height:100vh; max-width:400px;">
+<form method="post" action="" id="loginForm" novalidate autocomplete="off">
+
+    <?php message_get(); ?>
     
-    <a href="/login">
-        <img src="https://cdn.faker.ca/images@1.0.0/faker-logo-coloured-horizontal.png" alt="Faker Logo" class="w3-margin-bottom" style="max-width:300px;">
-    </a>
+    <label class="w3-text-black" for="email"><i class="fas fa-envelope"></i> Email</label>
+    <input class="w3-input w3-border w3-margin-bottom" type="text" id="email" name="email" autocomplete="off">
+    <div id="emailError" class="w3-text-red w3-small w3-margin-bottom"></div>
+    
+    <label class="w3-text-black" for="password"><i class="fas fa-lock"></i> Password</label>
+    <input class="w3-input w3-border w3-margin-bottom" type="password" id="password" name="password">
+    <div id="passwordError" class="w3-text-red w3-small w3-margin-bottom"></div>
 
-    <form method="post" action="" id="loginForm" novalidate>
+</form>
 
-        <?php message_get(); ?>
-        
-        <label class="w3-text-black" for="email"><i class="fas fa-envelope"></i> Email</label>
-        <input class="w3-input w3-border w3-margin-bottom" type="text" id="email" name="email">
-        <div id="emailError" class="w3-text-red w3-small w3-margin-bottom"></div>
-        
-        <label class="w3-text-black" for="password"><i class="fas fa-lock"></i> Password</label>
-        <input class="w3-input w3-border w3-margin-bottom" type="password" id="password" name="password">
-        <div id="passwordError" class="w3-text-red w3-small w3-margin-bottom"></div>
+<button class="w3-button w3-black w3-margin-top" onclick="validateForm()">
+    <i class="fas fa-sign-in-alt"></i> Login
+</button>
 
-    </form>
-
-    <button class="w3-button w3-black w3-margin-top" onclick="validateForm()">
-        <i class="fas fa-sign-in-alt"></i> Login
-    </button>
-
-    <div class="w3-margin-top">
-        <a href="/register"><i class="fas fa-user-plus"></i> Register</a> |
-        <a href="/forgot"><i class="fas fa-unlock-alt"></i> Forgot Password?</a>
-    </div>
-
+<div class="w3-margin-top">
+    <a href="/register"><i class="fas fa-user-plus"></i> Register</a> |
+    <a href="/forgot"><i class="fas fa-unlock-alt"></i> Forgot Password?</a>
 </div>
 
 <script>
@@ -136,4 +129,5 @@ async function validateForm(e) {
 
 <?php
 
+include __DIR__ . '/templates/login_footer.php';
 include __DIR__ . '/templates/html_footer.php';

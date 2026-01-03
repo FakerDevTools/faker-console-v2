@@ -6,22 +6,20 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') 
 {
+
     echo json_encode(['error' => 'Invalid request method.']);
     exit;
+
 }
 
 $email = trim($_POST['email'] ?? '');
 
 if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) 
 {
+
     echo json_encode(['exists' => false, 'error' => 'Invalid email.']);
     exit;
-}
 
-if (!isset($mysqli) || $mysqli->connect_errno) 
-{
-    echo json_encode(['exists' => false, 'error' => 'Database connection failed.']);
-    exit;
 }
 
 $stmt = $mysqli->prepare('SELECT id FROM users WHERE email = ?');
@@ -34,10 +32,15 @@ $mysqli->close();
 
 if ($exists) 
 {
+
     echo json_encode(['exists' => $exists, 'error' => 'Email already registered.']);
+    exit;
+
 } 
 else 
 {
+
     echo json_encode(['exists' => $exists]);
+    exit;
+
 }
-    

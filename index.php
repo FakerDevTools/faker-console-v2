@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 include __DIR__ . '/includes/bootstrap.php';
@@ -17,6 +18,20 @@ if ($path === '')
 
 $segments = explode('/', $path);
 $page = array_shift($segments);
+
+if($page == 'ajax')
+{
+    $page = array_shift($segments);
+
+    if ($page && file_exists(__DIR__ . "/ajax/$page.php") && $page !== 'index') 
+    {
+        
+        include __DIR__ . "/ajax/$page.php";
+        exit;
+
+    }
+
+}
 
 for ($i = 0; $i < count($segments) - 1; $i += 2) 
 {
@@ -45,5 +60,5 @@ else
     header('HTTP/1.0 404 Not Found');
     include __DIR__ . "/404.php";
     exit;
-    
+
 }

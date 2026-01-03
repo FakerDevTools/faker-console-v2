@@ -4,6 +4,7 @@
 	Deny from all
 </FilesMatch>
 
+
 RewriteEngine On
 
 # If the requested file or directory exists, serve it directly

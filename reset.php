@@ -1,7 +1,5 @@
 <?php
 
-define('TITLE', 'Register');
-
 // Redirect if already logged in
 login_check();
 
@@ -74,38 +72,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
 
 }
 
+define('TITLE', 'Register');
+
 include __DIR__ . '/templates/html_header.php';
+include __DIR__ . '/templates/login_header.php';
 
 ?>
 
-<div class="w3-display-container" style="min-height:100vh; max-width:400px;">
+<form method="post" action="" id="passwordForm" novalidate>
+    
+    <label class="w3-text-black" for="password"><i class="fas fa-lock"></i> New Password</label>
+    <input class="w3-input w3-border w3-margin-bottom" type="password" id="password" name="password">
+    <div id="passwordError" class="w3-text-red w3-small w3-margin-bottom"></div>
+    
+    <label class="w3-text-black" for="passwordConfirm"><i class="fas fa-lock"></i> Confirm Password</label>
+    <input class="w3-input w3-border w3-margin-bottom" type="password" id="passwordConfirm" name="passwordConfirm">
+    <div id="passwordConfirmError" class="w3-text-red w3-small w3-margin-bottom"></div>
+    
+</form>
 
-    <a href="/login">
-        <img src="https://cdn.faker.ca/images@1.0.0/faker-logo-coloured-horizontal.png" alt="Faker Logo" class="w3-margin-bottom" style="max-width:300px;">
-    </a>
+<button class="w3-button w3-black w3-margin-top" onclick="validateForm()">
+    <i class="fas fa-lock"></i> Update Password
+</button>
 
-    <?php message_get(); ?>
-
-    <form method="post" action="" id="passwordForm" novalidate>
-        
-        <label class="w3-text-black" for="password"><i class="fas fa-lock"></i> New Password</label>
-        <input class="w3-input w3-border w3-margin-bottom" type="password" id="password" name="password">
-        <div id="passwordError" class="w3-text-red w3-small w3-margin-bottom"></div>
-        
-        <label class="w3-text-black" for="passwordConfirm"><i class="fas fa-lock"></i> Confirm Password</label>
-        <input class="w3-input w3-border w3-margin-bottom" type="password" id="passwordConfirm" name="passwordConfirm">
-        <div id="passwordConfirmError" class="w3-text-red w3-small w3-margin-bottom"></div>
-        
-    </form>
-
-    <button class="w3-button w3-black w3-margin-top" onclick="validateForm()">
-        <i class="fas fa-lock"></i> Update Password
-    </button>
-
-    <div class="w3-margin-top">
-        <a href="/login" class=""><i class="fas fa-sign-in-alt"></i> Back to Login</a>
-    </div>
-
+<div class="w3-margin-top">
+    <a href="/login" class=""><i class="fas fa-sign-in-alt"></i> Back to Login</a>
 </div>
 
 <script>
@@ -155,4 +146,5 @@ async function validateForm(e) {
 
 <?php 
 
+include __DIR__ . '/templates/login_footer.php'; 
 include __DIR__ . '/templates/html_footer.php'; 

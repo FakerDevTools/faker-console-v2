@@ -1,5 +1,11 @@
 <?php
 
+function tab_text($text) {
+ 
+    return ucwords(str_replace(['-', '_'], ' ', $text));
+
+}
+
 function pre($data)
 {
     echo '<pre>' . htmlspecialchars(print_r($data, true)) . '</pre>';

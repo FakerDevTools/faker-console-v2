@@ -78,8 +78,10 @@ else
 
 ?>
 
-<p><a href="/create">Create an API Key</a></p>
-
+<button class="w3-button w3-black w3-margin-top" onclick="window.location.href='/create'">
+    <i class="fas fa-plus"></i> Create an API Key
+</button>
+    
 <?php 
 
 include __DIR__ . '/templates/dashboard_footer.php';

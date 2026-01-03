@@ -42,7 +42,7 @@ include __DIR__ . '/templates/dashboard_header.php';
 
 <a href="/apis">APIS</a> / 
 <a href="/api/id/<?= htmlspecialchars($slug) ?>"><?= htmlspecialchars($name) ?></a> / 
-Details
+<?= tab_text(isset($_GET['tab']) ? $_GET['tab'] : 'details') ?>
 
 <hr>
 
@@ -52,16 +52,16 @@ Details
     <a href="/api/id/<?= htmlspecialchars($slug) ?>"><i class="fa fa-magnifying-glass"></i> Details</a> | 
 <?php endif; ?>
 
-<?php if(TAB == 'docs'): ?>
+<?php if(TAB == 'documentation'): ?>
     <span class="w3-text-black"><i class="fa fa-book"></i> Documentation</span> | 
 <?php else: ?>
-    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/docs"><i class="fa fa-book"></i> Documentation</a> | 
+    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/documentation"><i class="fa fa-book"></i> Documentation</a> | 
 <?php endif; ?>
 
-<?php if(TAB == 'examples'): ?>
+<?php if(TAB == 'code-examples'): ?>
     <span class="w3-text-black"><i class="fa fa-code"></i> Code Examples</span>
 <?php else: ?>
-    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/examples"><i class="fa fa-code"></i> Code Examples</a>
+    <a href="/api/id/<?= htmlspecialchars($slug) ?>/tab/code-examples"><i class="fa fa-code"></i> Code Examples</a>
 <?php endif; ?>
 
 <hr> 
@@ -119,7 +119,7 @@ enable.addEventListener('change', function()
 
 
 
-<?php elseif($_GET['tab'] == 'docs'): ?>
+<?php elseif($_GET['tab'] == 'documentation'): ?>
 
 <h2>Documentation</h2>
 
@@ -127,7 +127,7 @@ enable.addEventListener('change', function()
 
 
 
-<?php elseif($_GET['tab'] == 'examples'): ?>
+<?php elseif($_GET['tab'] == 'code-examples'): ?>
 
 <h2>Examples</h2>
 

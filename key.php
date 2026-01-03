@@ -38,7 +38,8 @@ include __DIR__ . '/templates/dashboard_header.php';
 <h1><?= htmlspecialchars($name) ?></h1>
 
 <a href="/keys">Keys</a> / 
-<?= htmlspecialchars($name) ?>
+<a href="/key/id/<?= htmlspecialchars($key_id) ?>"><?= htmlspecialchars($name) ?></a> /
+<?= tab_text(isset($_GET['tab']) ? $_GET['tab'] : 'details') ?>
 
 <hr>
 
@@ -48,22 +49,22 @@ include __DIR__ . '/templates/dashboard_header.php';
     <a href="/key/id/<?= htmlspecialchars($key_id) ?>"><i class="fa fa-magnifying-glass"></i> Details</a> | 
 <?php endif; ?>
 
-<?php if(TAB == 'docs'): ?>
+<?php if(TAB == 'api-restrictions'): ?>
     <span class="w3-text-black"><i class="fa fa-cogs"></i> API Restrictions</span> | 
 <?php else: ?>
-    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/docs"><i class="fa fa-cogs"></i> API Restrictions</a> | 
+    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/api-restrictions"><i class="fa fa-cogs"></i> API Restrictions</a> | 
 <?php endif; ?>
 
-<?php if(TAB == 'examples'): ?>
+<?php if(TAB == 'ip-restrictions'): ?>
     <span class="w3-text-black"><i class="fa fa-globe"></i> IP Restrictions</span> | 
 <?php else: ?>
-    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/examples"><i class="fa fa-globe"></i> IP Restrictions</a> | 
+    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/ip-restrictions"><i class="fa fa-globe"></i> IP Restrictions</a> | 
 <?php endif; ?>
 
-<?php if(TAB == 'logs'): ?>
+<?php if(TAB == 'activity-log'): ?>
     <span class="w3-text-black"><i class="fa fa-list"></i> Activity Log</span>
 <?php else: ?>
-    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/logs"><i class="fa fa-list"></i> Activity Logs</a>
+    <a href="/key/id/<?= htmlspecialchars($key_id) ?>/tab/activity-log"><i class="fa fa-list"></i> Activity Logs</a>
 <?php endif; ?>
 
 <hr>
@@ -78,23 +79,21 @@ include __DIR__ . '/templates/dashboard_header.php';
 
 
 
-<?php elseif($_GET['tab'] == 'docs'): ?>
+<?php elseif($_GET['tab'] == 'api-restrictions'): ?>
 
-<h2>Documentation</h2>
+<h2>API Restrictions</h2>
 
-<p>Documentation content goes here.</p>
-
-
-
-<?php elseif($_GET['tab'] == 'examples'): ?>
-
-<h2>Examples</h2>
-
-<p>Code examples content goes here.</p>
+<p>API restrictions content goes here.</p>
 
 
+<?php elseif($_GET['tab'] == 'ip-restrictions'): ?>
 
-<?php elseif($_GET['tab'] == 'logs'): ?>
+<h2>IP Restrictions</h2>
+
+<p>IP restrictions content goes here.</p>
+
+
+<?php elseif($_GET['tab'] == 'activity-log'): ?>
 
 <h2>Activity Logs</h2>
 

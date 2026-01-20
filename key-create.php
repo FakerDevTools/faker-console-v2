@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     {
 
         message_set('API key name is required.', 'error');
-        header_redirect('/create');
+        header_redirect('/key-create');
 
     } 
     else 

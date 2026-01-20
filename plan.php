@@ -178,7 +178,6 @@ function selectPricing(plan, e) {
 
     let selectedPlan = event.target;
     selectedPlan = selectedPlan.closest(".w3-flex-item");
-    console.log(selectedPlan);
 
     // Set selected leftbar to green
     selectedPlan.classList.remove('w3-border-red');

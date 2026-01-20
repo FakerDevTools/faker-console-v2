@@ -26,25 +26,6 @@ if(!$stmt->num_rows)
 $stmt->bind_result($key_id, $name);
 $stmt->fetch();
 
-if(isset($_GET['delete']) and $_GET['tab'] == 'ip-restrictions')
-{
-
-    $stmt = $mysqli->prepare('
-        UPDATE ips
-        SET deleted_at = NOW()
-        WHERE id = ?
-        AND key_id = ?
-        LIMIT 1
-    ');
-    $stmt->bind_param('ii', $_GET['delete'], $_GET['id']);
-    $stmt->execute();
-    $stmt->close();
-
-    message_set('IP restriction deleted.', 'success');
-    header_redirect('/key/id/' . $key_id . '/tab/ip-restrictions');
-
-}
-
 define('MENU', 'keys');
 define('TAB', isset($_GET['tab']) ? $_GET['tab'] : 'details');
 define('TITLE', $name);
@@ -116,13 +97,12 @@ $stmt = $mysqli->prepare('
         SELECT COUNT(*)
         FROM api_key
         WHERE api_key.api_id = apis.id
-        AND api_key.key_id = ?
     ) AS key_enabled
     FROM apis
     HAVING user_enabled = 1
     ORDER BY name
 ');
-$stmt->bind_param('ii', $_SESSION['user_id'], $_GET['id']);
+$stmt->bind_param('i', $_SESSION['user_id']);
 $stmt->execute();
 $stmt->bind_result($api_id, $name, $user_enabled, $key_enabled);
 $stmt->store_result();
@@ -207,11 +187,6 @@ $stmt = $mysqli->prepare('
     SELECT id, address, type, created_at
     FROM `ips`
     WHERE key_id = ?
-    AND (
-        type = "allow" 
-        OR type = "block"
-    )
-    AND deleted_at IS NULL
     ORDER BY type, created_at DESC
 ');
 $stmt->bind_param('i', $_GET['id']);
@@ -227,7 +202,6 @@ $stmt->store_result();
             <th>IP Address</th>
             <th>Type</th>
             <th>Created At</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -240,14 +214,11 @@ $stmt->store_result();
                 <tr>
                     <td><?= htmlspecialchars($address) ?></td>
                     <td>
-                        <a href="#" onclick="toggleType(<?= $ip_id ?>, event)"><?= ($type == 'allow' ? 'Allow' : 'Block') ?></a>
-                    </td>
-                    <td><?= htmlspecialchars($created_at) ?></td>
-                    <td>
-                        <a href="/key/id/<?= $key_id ?>/tab/ip-restrictions/delete/<?= $ip_id ?>" onclick="return confirm('Are you sure you want to delete this IP restriction?');">
-                            <i class="fas fa-trash-alt w3-text-red"></i>
+                        <a href="#" onclick="toggleType(<?= $ip_id ?>, event)">
+                            <?= ($type == 'allow' ? 'Allow' : 'Block') ?>
                         </a>
                     </td>
+                    <td><?= htmlspecialchars($created_at) ?></td>
                 </tr>
             <?php endwhile; ?>
         <?php endif; ?>
@@ -255,96 +226,8 @@ $stmt->store_result();
 </table>
 
 <button class="w3-button w3-black w3-margin-top" onclick="window.location.href='/key-ip-add/id/<?= $key_id ?>'">
-        <i class="fas fa-plus"></i> Create an IP Restriction
+    <i class="fas fa-plus"></i> Create an IP Restriction
 </button>
-
-<script>
-
-function toggleType(ip_id, e) {
-
-    e.preventDefault();
-
-    let currentType = event.target;
-    currentType.innerHTML = currentType.innerHTML == "Allow" ? "Block" : "Allow";
-
-    fetch('/ajax/api-key-type-toggle', 
-    {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'key=' + encodeURIComponent(<?= json_encode($_GET['id']) ?>) + 
-            '&ip=' + encodeURIComponent(ip_id)
-    })
-    .then(response => response.json())
-    .then(data => 
-    {
-        
-    })
-    .catch(error => 
-    {
-        
-    });
-
-}
-
-</script>
-
-<?php
-
-$stmt = $mysqli->prepare('
-    SELECT id, address
-    FROM `ips`
-    WHERE key_id = ?
-    AND type = "failed"
-    AND deleted_at IS NULL
-    ORDER BY created_at DESC
-');
-$stmt->bind_param('i', $_GET['id']);
-$stmt->execute();
-$stmt->bind_result($ip_id, $address);
-$stmt->store_result();
-
-?>
-
-<?php if($stmt->num_rows > 0): ?>
-
-    <p>This API key has been access by the following unrecognized IPs:</p>
-
-    <table class="w3-table w3-bordered w3-striped w3-margin-top">
-        <thead>
-            <tr class="w3-black">
-                <th>IP Address</th>
-                <th>Type</th>
-                <th>Created At</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if($stmt->num_rows == 0): ?>
-                <tr>
-                    <td colspan="3">No IP restrictions have been added yet.</td>
-                </tr>
-            <?php else: ?>
-                <?php while($stmt->fetch()): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($address) ?></td>
-                        <td>
-                            <a href="#" onclick="toggleType(<?= $ip_id ?>, event)"><?= ($type == 'allow' ? 'Allow' : 'Block') ?></a>
-                        </td>
-                        <td><?= htmlspecialchars($created_at) ?></td>
-                        <td>
-                            <a href="/key/id/<?= $key_id ?>/tab/ip-restrictions/delete/<?= $ip_id ?>" onclick="return confirm('Are you sure you want to delete this IP restriction?');">
-                                <i class="fas fa-trash-alt w3-text-red"></i>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
-
-<?php endif; ?>
-
-
 
 <?php elseif($_GET['tab'] == 'activity-log'): ?>
 

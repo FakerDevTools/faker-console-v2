@@ -94,7 +94,7 @@ enable.addEventListener('change', function()
         enableLabel.innerText = 'Enable this API';
     }
 
-    fetch('/ajax/api-toggle', 
+    fetch('/ajax/api-user-toggle', 
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

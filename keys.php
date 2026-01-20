@@ -78,7 +78,7 @@ else
 
 ?>
 
-<button class="w3-button w3-black w3-margin-top" onclick="window.location.href='/create'">
+<button class="w3-button w3-black w3-margin-top" onclick="window.location.href='/key-create'">
     <i class="fas fa-plus"></i> Create an API Key
 </button>
     
